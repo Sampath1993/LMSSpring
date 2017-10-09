@@ -30,7 +30,7 @@
               </a>
             </li>
             <li class="list-inline-item">
-              <a href="borrowerfunc" class="btn btn-secondary btn-lg">
+              <a href="bor" class="btn btn-secondary btn-lg">
                 <span class="network-name">Borrower</span>
               </a>
             </li>
