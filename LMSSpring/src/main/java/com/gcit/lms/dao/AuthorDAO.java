@@ -82,6 +82,10 @@ public class AuthorDAO extends BaseDAO<Author> implements ResultSetExtractor<Lis
 		
 	}
 	
+	public List<Author> readAuthorsByBook(Integer bookId) throws SQLException{
+		return template.query("SELECT * FROM tbl_author WHERE authorId IN (SELECT authorId FROM tbl_book_authors WHERE bookId = ?)", new Object[] {bookId}, this);
+	}
+	
 	public Author readAuthorByPK(Integer authorId) throws SQLException {
 		List<Author> authors = template.query("SELECT * FROM tbl_author WHERE authorId = ?", new Object[]{authorId}, this);
 		if(authors!=null){

@@ -72,7 +72,7 @@ public class AdminService {
 
 	public List<Author> readAuthors(String searchString, Integer pageNo) throws SQLException {
 		List<Author> authors = adao.readAuthors(searchString, pageNo);
-		for(Author a : authors) {
+		for (Author a : authors) {
 			a.setBooks(bdao.readBooksByAuthor(a));
 		}
 		return authors;
@@ -95,7 +95,13 @@ public class AdminService {
 	}
 
 	public List<Book> readBooks(String searchString, Integer pageNo) throws SQLException {
-		return bdao.readBooks(searchString, pageNo);
+		List<Book> books = bdao.readBooks(searchString, pageNo);
+		for (Book b : books) {
+			b.setAuthors(adao.readAuthorsByBook(b.getBookId()));
+			b.setGenres(gdao.readGenreByBook(b.getBookId()));
+			b.setPublisher(pdao.readPublisherByPK(b.getPublisher().getPublisherId()));
+		}
+		return books;
 	}
 
 	public List<BookLoans> readAllLoans(String searchString, Integer pageNo) throws SQLException {
@@ -103,7 +109,9 @@ public class AdminService {
 	}
 
 	public Author readAuthorByPK(Integer authorId) throws SQLException {
-		return adao.readAuthorByPK(authorId);
+		Author author = adao.readAuthorByPK(authorId);
+		author.setBooks(bdao.readBooksByAuthor(authorId));
+		return author;
 	}
 
 	public Genre readGenreByPK(Integer genreId) throws SQLException {
@@ -123,7 +131,13 @@ public class AdminService {
 	}
 
 	public Book readBookByPK(Integer bookId) throws SQLException {
-		return bdao.readBookByPK(bookId);
+		Book book = bdao.readBookByPK(bookId);
+		book.setAuthors(adao.readAuthorsByBook(bookId));
+		book.setGenres(gdao.readGenreByBook(bookId));
+		if (book.getPublisher().getPublisherId() != null) {
+			book.setPublisher(pdao.readPublisher(book.getPublisher().getPublisherId()));
+		}
+		return book;
 	}
 
 	public Integer getAuthorsCount() throws SQLException {

@@ -84,6 +84,10 @@ public class BookDAO extends BaseDAO<Book> implements ResultSetExtractor<List<Bo
 		return template.queryForObject("SELECT count(*) as COUNT FROM tbl_book", Integer.class);
 	}
 	
+	public List<Book> readBooksByAuthor(Integer authorId) throws SQLException{
+		return template.query("SELECT * FROM tbl_book WHERE bookId IN (SELECT bookId FROM tbl_book_authors WHERE authorId=?)", new Object[] {authorId}, this);
+	}
+	
 	public List<Book> readBooks(String bookName, Integer pageNo) throws SQLException {
 		setPageNo(pageNo);
 		if(bookName !=null && !bookName.isEmpty()){

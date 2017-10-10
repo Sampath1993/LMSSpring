@@ -7,7 +7,6 @@
 <%@ taglib prefix="gcit" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@include file="include.html"%>
 <%@page import="com.gcit.lms.entity.Book"%>
 <%@page import="com.gcit.lms.service.AdminService"%>
 <%@page import="java.util.ArrayList"%>

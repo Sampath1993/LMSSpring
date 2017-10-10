@@ -110,7 +110,7 @@ public class BorController {
 		return "checkoutbooks";
 	}
 	
-	@RequestMapping(value = "/return", method = RequestMethod.GET)
+	@RequestMapping(value = "/returnbook", method = RequestMethod.GET)
 	public String returnBook(Locale locale, Model model, @RequestParam(value = "cardNo") Integer cardNo,
 			@RequestParam(value = "branchId") Integer branchId, @RequestParam(value = "bookId") Integer bookId,
 			@RequestParam(value = "pageNo", required = false) Integer pageNo) {

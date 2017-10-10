@@ -85,20 +85,19 @@ public class AuthorController {
 	}
 	
 	@RequestMapping(value = "/editauthordone", method = RequestMethod.GET)
-	public String editAuthor(Locale locale, Model model, @RequestParam(value = "authorId", required = false) Integer authorId) {
+	public String editAuthor(@Validated @ModelAttribute("author") Author author, BindingResult result, Locale locale, Model model) {
 		try {
-			model.addAttribute("author", adminService.readAuthorByPK(authorId));
-			model.addAttribute("books", adminService.readBooks());
+			adminService.saveAuthor(author);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return "editauthor";
+		return "redirect:/viewauthors";
 	}
 	
 	@RequestMapping(value = "/addauthordone", method = RequestMethod.POST)
 	public String addAuthor(@Validated @ModelAttribute("author") Author author, BindingResult result, Locale locale, Model model) {
 		try {
-			System.out.println(author.getAuthorName());
+			//System.out.println(author.getAuthorName());
 			adminService.saveAuthor(author);
 		} catch (SQLException e) {
 			e.printStackTrace();

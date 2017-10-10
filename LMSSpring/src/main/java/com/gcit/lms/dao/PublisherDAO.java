@@ -59,7 +59,7 @@ public class PublisherDAO extends BaseDAO<Publisher> implements ResultSetExtract
 	}
 
 	public Publisher readPublisher(Integer publisherId) throws SQLException{
-		List<Publisher> temp = template.query("SELECT * FROM tbl_publisher WHERE publisherId = ", new Object[] { publisherId }, this);
+		List<Publisher> temp = template.query("SELECT * FROM tbl_publisher WHERE publisherId = ?", new Object[] { publisherId }, this);
 		if(temp!=null && !temp.isEmpty())
 		{
 			return temp.get(0);

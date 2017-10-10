@@ -6,6 +6,7 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.gcit.lms.entity.Author;
 import com.gcit.lms.entity.Book;
 import com.gcit.lms.service.AdminService;
 
+@Controller
 public class BookController {
 	
 private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -36,6 +37,8 @@ private static final Logger logger = LoggerFactory.getLogger(HomeController.clas
 		model.addAttribute("book", new Book());
 		try {
 			model.addAttribute("authors", adminService.readAuthors());
+			model.addAttribute("branch", adminService.readBranches());
+			model.addAttribute("publishers", adminService.readPublishers());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -70,6 +73,9 @@ private static final Logger logger = LoggerFactory.getLogger(HomeController.clas
 		try {
 			model.addAttribute("book", adminService.readBookByPK(bookId));
 			model.addAttribute("authors", adminService.readAuthors());
+			model.addAttribute("branch", adminService.readBranches());
+			model.addAttribute("genres", adminService.readGenres());
+			model.addAttribute("publishers", adminService.readPublishers());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

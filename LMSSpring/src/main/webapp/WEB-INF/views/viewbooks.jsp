@@ -6,54 +6,38 @@
 <%@page import="com.gcit.lms.entity.Author"%>
 <%@page import="com.gcit.lms.entity.Publisher"%>
 <%@page import="com.gcit.lms.entity.Genre"%>
-<%
-	AdminService service = new AdminService();
-	Integer totalCount = service.getBooksCount();
-	int numOfPages = 0;
-	if(totalCount%10 > 0){
-		numOfPages = totalCount/10 +1;
-	}else{
-		numOfPages = totalCount/10;
+<%@ taglib prefix="gcit" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	function searchAuthors() {
+		$.ajax({
+			method : "POST",
+			url : "searchAuthors",
+			data : {
+				searchString : $('#searchString')
+			}
+		}).done(function(data) {
+			$('#authorsTable').html(data);
+		});
 	}
-	List<Book> books = new ArrayList<>();
-	if(request.getAttribute("books")!=null){
-		books = (List<Book>)request.getAttribute("books");
-	}else{
-		books = service.readBooks(null, 1);
-	}
-	Integer pageNo = 1;
-	Boolean first = false, last = false;
-	if(request.getAttribute("pageNo")!=null){
-		pageNo = (Integer)request.getAttribute("pageNo");
-	} else {
-		pageNo = 1;
-	}
-	
-	if(pageNo == numOfPages){
-		last = true;
-	}
-	
-	if(pageNo == 1){
-		first = true;
-	}
-%>
-<%
-	if (request.getAttribute("statusMessage") != null) {
-		out.println(request.getAttribute("statusMessage"));
-	}
-%>
+</script>
 <div class="container">
-	<h1>List of Books in LMS&nbsp;&nbsp;&nbsp;&nbsp; Total Books in LMS: <%=totalCount%> Books</h1>
+	<h1>List of Books in LMS&nbsp;&nbsp;&nbsp;&nbsp; Total Books in LMS: ${totalCount} Books</h1>
+	<input class="form-control mr-sm-2" type="text"
+			placeholder="Search Authors" aria-label="Search" name="searchString" id="searchString">
+		<button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="searchAuthors()">Search</button>
 	<nav aria-label="Page navigation example">
 		<ul class="pagination">
-			<li class="page-item<% if(first==true){%> disabled<%}%>"><a class="page-link" href="pageBooks?pageNo=<%=pageNo-1%>"
+			<li class="page-item"><a class="page-link" href="#"
 				aria-label="Previous"> <span aria-hidden="true">&laquo;</span> <span
 					class="sr-only">Previous</span>
 			</a></li>
-			<%for(int i=1; i<=numOfPages; i++){ %>
-			<li class="page-item"><a class="page-link" href="pageBooks?pageNo=<%=i%>"><%=i%></a></li>
-			<%} %>
-			<li class="page-item<% if(last==true){%> disabled<%}%>"><a class="page-link" href="pageBooks?pageNo=<%=pageNo+1%>"
+			<gcit:forEach begin="1" end="${ numOfPages}" var="i">
+				<li class="page-item"><a class="page-link" href="viewbooks?pageNo=${i}">${i}</a></li>	
+			</gcit:forEach>
+			<li class="page-item"><a class="page-link" href="#"
 				aria-label="Next"> <span aria-hidden="true">&raquo;</span> <span
 					class="sr-only">Next</span>
 			</a></li>
@@ -69,42 +53,26 @@
 			<th>Edit Book</th>
 			<th>Delete Book</th>
 		</tr>
-		<%
-			for (Book b : books) {
-		%>
+		<gcit:forEach var="b" items="${books}" varStatus="booksLoop">
 		<tr>
-			<td><%=books.indexOf(b) + 1%></td>
-			<td><%=b.getTitle()%></td>
+			<td>${booksLoop.index+1}</td>
+			<td>${b.title}</td>
 			<td>
-				<%
-					for (Author a : b.getAuthors()) {
-							out.println(a.getAuthorName() + "|");
-						}
-				%>
+				<gcit:forEach var="a" items="${b.authors}">${a.authorName} | </gcit:forEach>
 			</td>
 			<td>
-				<%
-					Publisher temp = b.getPublisher();
-					if(temp!=null){
-						out.println(temp.getPublisherName());
-					}
-				%>
+				${b.publisher.publisherName}
 			</td>
 			<td>
-			<%
-					for (Genre a : b.getGenres()) {
-							out.println(a.getGenreName() + "|");
-						}
-				%>
+				<gcit:forEach var="g" items="${b.genres}">${g.genreName} | </gcit:forEach>
+			</td>
 			<td><button type="button"
-					onclick="javascript:location.href='editbook.jsp?bookId=<%=b.getBookId()%>'"
+					onclick="javascript:location.href='editbook?bookId=${b.bookId}'"
 					class="btn btn-primary btn-sm">Edit</button></td>
 			<td><button type="button"
-					onclick="javascript:location.href='deleteBook?bookId=<%=b.getBookId()%>'"
+					onclick="javascript:location.href='deleteBook?bookId=${b.bookId}'"
 					class="btn btn-danger btn-sm">Delete</button></td>
 		</tr>
-		<%
-			}
-		%>
+		</gcit:forEach>
 	</table>
 </div>
